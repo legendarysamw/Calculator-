@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Inheritance Calculator - Quranic Distribution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .islamic-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f3f4f6' fill-opacity='0.1'%3E%3Cpath d='m0 40l40-40h-40v40zm40 0v-40h-40l40 40z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .heir-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .heir-card:hover {
+            border-color: #059669;
+            transform: translateY(-2px);
+        }
+        .result-card {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 islamic-pattern min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-green-600 rounded-full mb-4">
+                <i class="fas fa-balance-scale text-white text-2xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Islamic Inheritance Calculator</h1>
+            <p class="text-gray-600 text-lg">Calculate inheritance shares according to Quranic principles</p>
+            <div class="mt-4 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                <p class="text-blue-800 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    This calculator follows traditional Islamic inheritance laws. Please consult with a qualified Islamic scholar for complex cases.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Input Form -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-users mr-3 text-green-600"></i>
+                    Family Information
+                </h2>
+
+                <form id="inheritanceForm" class="space-y-6">
+                    <!-- Estate Value -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">
+                            <i class="fas fa-dollar-sign mr-2"></i>Total Estate Value
+                        </label>
+                        <input type="number" id="estateValue" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                               placeholder="Enter total estate value" value="100000" min="0" step="0.01">
+                    </div>
+
+                    <!-- Deceased Gender -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">
+                            <i class="fas fa-user mr-2"></i>Deceased Gender
+                        </label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="deceasedGender" value="male" checked class="mr-2">
+                                <span>Male</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="deceasedGender" value="female" class="mr-2">
+                                <span>Female</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Heirs Input -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Spouse -->
+                        <div class="heir-card bg-white p-4 rounded-lg border shadow-sm">
+                            <label class="text-sm font-medium text-gray-700 mb-2 block">
+                                <i class="fas fa-heart mr-2 text-red-500"></i>Spouse
+                            </label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="wives" placeholder="Wives" min="0" max="4" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="husbands" placeholder="Husband" min="0" max="1" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Wives (max 4) | Husband (max 1)</p>
+                        </div>
+
+                        <!-- Children -->
+                        <div class="heir-card bg-white p-4 rounded-lg border shadow-sm">
+                            <label class="text-sm font-medium text-gray-700 mb-2 block">
+                                <i class="fas fa-child mr-2 text-blue-500"></i>Children
+                            </label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="sons" placeholder="Sons" min="0" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="daughters" placeholder="Daughters" min="0" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                            </div>
+                        </div>
+
+                        <!-- Parents -->
+                        <div class="heir-card bg-white p-4 rounded-lg border shadow-sm">
+                            <label class="text-sm font-medium text-gray-700 mb-2 block">
+                                <i class="fas fa-user-tie mr-2 text-purple-500"></i>Parents
+                            </label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="father" placeholder="Father" min="0" max="1" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="mother" placeholder="Mother" min="0" max="1" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                            </div>
+                        </div>
+
+                        <!-- Grandparents -->
+                        <div class="heir-card bg-white p-4 rounded-lg border shadow-sm">
+                            <label class="text-sm font-medium text-gray-700 mb-2 block">
+                                <i class="fas fa-user-friends mr-2 text-yellow-600"></i>Grandparents
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="paternalGrandfather" placeholder="P. Grandfather" min="0" max="1" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="paternalGrandmother" placeholder="P. Grandmother" min="0" max="1" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="maternalGrandfather" placeholder="M. Grandfather" min="0" max="1" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="maternalGrandmother" placeholder="M. Grandmother" min="0" max="1" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                            </div>
+                        </div>
+
+                        <!-- Siblings -->
+                        <div class="heir-card bg-white p-4 rounded-lg border shadow-sm">
+                            <label class="text-sm font-medium text-gray-700 mb-2 block">
+                                <i class="fas fa-users mr-2 text-green-500"></i>Full Siblings
+                            </label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="fullBrothers" placeholder="Brothers" min="0" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="fullSisters" placeholder="Sisters" min="0" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                            </div>
+                        </div>
+
+                        <!-- Half Siblings -->
+                        <div class="heir-card bg-white p-4 rounded-lg border shadow-sm">
+                            <label class="text-sm font-medium text-gray-700 mb-2 block">
+                                <i class="fas fa-user-friends mr-2 text-indigo-500"></i>Half Siblings
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="paternalHalfBrothers" placeholder="P. Brothers" min="0" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="paternalHalfSisters" placeholder="P. Sisters" min="0" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="maternalHalfBrothers" placeholder="M. Brothers" min="0" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                                <input type="number" id="maternalHalfSisters" placeholder="M. Sisters" min="0" 
+                                       class="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <button type="submit" 
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-calculator mr-2"></i>
+                        Calculate Inheritance
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                    <i class="fas fa-chart-pie mr-3 text-green-600"></i>
+                    Inheritance Distribution
+                </h2>
+
+                <div id="results" class="space-y-4">
+                    <div class="text-center py-12 text-gray-500">
+                        <i class="fas fa-calculator text-4xl mb-4 opacity-50"></i>
+                        <p>Enter family information and click "Calculate Inheritance" to see the distribution.</p>
+                    </div>
+                </div>
+
+                <!-- Summary Box -->
+                <div id="summaryBox" class="hidden mt-6 result-card p-4 rounded-lg border-l-4 border-green-500">
+                    <h3 class="font-semibold text-gray-800 mb-2">Distribution Summary</h3>
+                    <div id="summaryContent" class="text-sm text-gray-600"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Islamic Principles Info -->
+        <div class="mt-10 bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-book-open mr-3 text-green-600"></i>
+                Key Islamic Inheritance Principles
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2">Fixed Shares (Fara'id)</h4>
+                    <p class="text-blue-700">Certain heirs receive fixed fractions as specified in the Quran</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800 mb-2">Male vs Female Shares</h4>
+                    <p class="text-green-700">Generally, male heirs receive twice the share of female heirs in the same category</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-purple-800 mb-2">Residuary (Asabah)</h4>
+                    <p class="text-purple-700">After fixed shares, remaining estate goes to agnatic heirs</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-gray-600 text-sm">
+            <p class="mb-2">
+                <i class="fas fa-exclamation-triangle mr-2 text-yellow-500"></i>
+                This calculator provides estimates based on general Islamic inheritance principles.
+            </p>
+            <p>For complex cases or legal advice, please consult with qualified Islamic scholars or legal experts.</p>
+        </div>
+    </div>
+
+    <script>
+        class IslamicInheritanceCalculator {
+            constructor() {
+                this.heirs = {};
+                this.estateValue = 0;
+                this.deceasedGender = 'male';
+                this.results = [];
+            }
+
+            getInputValues() {
+                this.estateValue = parseFloat(document.getElementById('estateValue').value) || 0;
+                this.deceasedGender = document.querySelector('input[name="deceasedGender"]:checked').value;
+                
+                this.heirs = {
+                    wives: parseInt(document.getElementById('wives').value) || 0,
+                    husbands: parseInt(document.getElementById('husbands').value) || 0,
+                    sons: parseInt(document.getElementById('sons').value) || 0,
+                    daughters: parseInt(document.getElementById('daughters').value) || 0,
+                    father: parseInt(document.getElementById('father').value) || 0,
+                    mother: parseInt(document.getElementById('mother').value) || 0,
+                    paternalGrandfather: parseInt(document.getElementById('paternalGrandfather').value) || 0,
+                    paternalGrandmother: parseInt(document.getElementById('paternalGrandmother').value) || 0,
+                    maternalGrandfather: parseInt(document.getElementById('maternalGrandfather').value) || 0,
+                    maternalGrandmother: parseInt(document.getElementById('maternalGrandmother').value) || 0,
+                    fullBrothers: parseInt(document.getElementById('fullBrothers').value) || 0,
+                    fullSisters: parseInt(document.getElementById('fullSisters').value) || 0,
+                    paternalHalfBrothers: parseInt(document.getElementById('paternalHalfBrothers').value) || 0,
+                    paternalHalfSisters: parseInt(document.getElementById('paternalHalfSisters').value) || 0,
+                    maternalHalfBrothers: parseInt(document.getElementById('maternalHalfBrothers').value) || 0,
+                    maternalHalfSisters: parseInt(document.getElementById('maternalHalfSisters').value) || 0
+                };
+            }
+
+            calculateShares() {
+                this.results = [];
+                let totalShares = 0;
+                let fixedShares = 0;
+
+                // Spouse shares
+                if (this.heirs.wives > 0) {
+                    let wifeShare;
+                    if (this.heirs.sons > 0 || this.heirs.daughters > 0) {
+                        wifeShare = 1/8; // 1/8 if there are children
+                    } else {
+                        wifeShare = 1/4; // 1/4 if no children
+                    }
+                    const totalWifeShare = wifeShare;
+                    const individualWifeShare = totalWifeShare / this.heirs.wives;
+                    
+                    this.results.push({
+                        heir: `Wife${this.heirs.wives > 1 ? 's' : ''} (${this.heirs.wives})`,
+                        fraction: `${totalWifeShare.toFixed(4)} (${(totalWifeShare * 100).toFixed(2)}%)`,
+                        individualFraction: individualWifeShare,
+                        amount: this.estateValue * totalWifeShare,
+                        individualAmount: this.estateValue * individualWifeShare,
+                        type: 'Fixed Share',
+                        count: this.heirs.wives
+                    });
+                    fixedShares += totalWifeShare;
+                }
+
+                if (this.heirs.husbands > 0) {
+                    let husbandShare;
+                    if (this.heirs.sons > 0 || this.heirs.daughters > 0) {
+                        husbandShare = 1/4; // 1/4 if there are children
+                    } else {
+                        husbandShare = 1/2; // 1/2 if no children
+                    }
+                    
+                    this.results.push({
+                        heir: 'Husband',
+                        fraction: `${husbandShare.toFixed(4)} (${(husbandShare * 100).toFixed(2)}%)`,
+                        individualFraction: husbandShare,
+                        amount: this.estateValue * husbandShare,
+                        individualAmount: this.estateValue * husbandShare,
+                        type: 'Fixed Share',
+                        count: 1
+                    });
+                    fixedShares += husbandShare;
+                }
+
+                // Parent shares
+                if (this.heirs.father > 0) {
+                    let fatherShare;
+                    if (this.heirs.sons > 0) {
+                        fatherShare = 1/6; // 1/6 if there are sons
+                    } else if (this.heirs.daughters > 0) {
+                        fatherShare = 1/6; // 1/6 plus residuary with daughters
+                    } else {
+                        fatherShare = 1/6; // Will get residuary too
+                    }
+                    
+                    this.results.push({
+                        heir: 'Father',
+                        fraction: `${fatherShare.toFixed(4)} (${(fatherShare * 100).toFixed(2)}%)`,
+                        individualFraction: fatherShare,
+                        amount: this.estateValue * fatherShare,
+                        individualAmount: this.estateValue * fatherShare,
+                        type: 'Fixed Share',
+                        count: 1
+                    });
+                    fixedShares += fatherShare;
+                }
+
+                if (this.heirs.mother > 0) {
+                    let motherShare;
+                    if (this.heirs.sons > 0 || this.heirs.daughters > 0 || 
+                        (this.heirs.fullBrothers + this.heirs.fullSisters + 
+                         this.heirs.paternalHalfBrothers + this.heirs.paternalHalfSisters) >= 2) {
+                        motherShare = 1/6; // 1/6 if there are children or 2+ siblings
+                    } else {
+                        motherShare = 1/3; // 1/3 otherwise
+                    }
+                    
+                    this.results.push({
+                        heir: 'Mother',
+                        fraction: `${motherShare.toFixed(4)} (${(motherShare * 100).toFixed(2)}%)`,
+                        individualFraction: motherShare,
+                        amount: this.estateValue * motherShare,
+                        individualAmount: this.estateValue * motherShare,
+                        type: 'Fixed Share',
+                        count: 1
+                    });
+                    fixedShares += motherShare;
+                }
+
+                // Children shares
+                if (this.heirs.sons > 0 || this.heirs.daughters > 0) {
+                    const remainingForChildren = 1 - fixedShares;
+                    const totalChildShares = (this.heirs.sons * 2) + this.heirs.daughters;
+                    
+                    if (this.heirs.sons > 0) {
+                        const sonShare = (remainingForChildren * 2) / totalChildShares;
+                        const totalSonShare = sonShare * this.heirs.sons;
+                        
+                        this.results.push({
+                            heir: `Son${this.heirs.sons > 1 ? 's' : ''} (${this.heirs.sons})`,
+                            fraction: `${totalSonShare.toFixed(4)} (${(totalSonShare * 100).toFixed(2)}%)`,
+                            individualFraction: sonShare,
+                            amount: this.estateValue * totalSonShare,
+                            individualAmount: this.estateValue * sonShare,
+                            type: 'Residuary',
+                            count: this.heirs.sons
+                        });
+                    }
+                    
+                    if (this.heirs.daughters > 0) {
+                        const daughterShare = remainingForChildren / totalChildShares;
+                        const totalDaughterShare = daughterShare * this.heirs.daughters;
+                        
+                        this.results.push({
+                            heir: `Daughter${this.heirs.daughters > 1 ? 's' : ''} (${this.heirs.daughters})`,
+                            fraction: `${totalDaughterShare.toFixed(4)} (${(totalDaughterShare * 100).toFixed(2)}%)`,
+                            individualFraction: daughterShare,
+                            amount: this.estateValue * totalDaughterShare,
+                            individualAmount: this.estateValue * daughterShare,
+                            type: 'Residuary',
+                            count: this.heirs.daughters
+                        });
+                    }
+                } else {
+                    // Handle siblings and other relatives when no children
+                    this.handleSiblingsAndOthers(fixedShares);
+                }
+
+                // Handle grandparents if parents are not present
+                this.handleGrandparents(fixedShares);
+            }
+
+            handleSiblingsAndOthers(usedShares) {
+                const remaining = 1 - usedShares;
+                
+                if (remaining > 0 && this.heirs.father === 0) {
+                    // Full siblings get preference
+                    if (this.heirs.fullBrothers > 0 || this.heirs.fullSisters > 0) {
+                        const totalSiblingShares = (this.heirs.fullBrothers * 2) + this.heirs.fullSisters;
+                        
+                        if (this.heirs.fullBrothers > 0) {
+                            const brotherShare = (remaining * 2) / totalSiblingShares;
+                            const totalBrotherShare = brotherShare * this.heirs.fullBrothers;
+                            
+                            this.results.push({
+                                heir: `Full Brother${this.heirs.fullBrothers > 1 ? 's' : ''} (${this.heirs.fullBrothers})`,
+                                fraction: `${totalBrotherShare.toFixed(4)} (${(totalBrotherShare * 100).toFixed(2)}%)`,
+                                individualFraction: brotherShare,
+                                amount: this.estateValue * totalBrotherShare,
+                                individualAmount: this.estateValue * brotherShare,
+                                type: 'Residuary',
+                                count: this.heirs.fullBrothers
+                            });
+                        }
+                        
+                        if (this.heirs.fullSisters > 0) {
+                            const sisterShare = remaining / totalSiblingShares;
+                            const totalSisterShare = sisterShare * this.heirs.fullSisters;
+                            
+                            this.results.push({
+                                heir: `Full Sister${this.heirs.fullSisters > 1 ? 's' : ''} (${this.heirs.fullSisters})`,
+                                fraction: `${totalSisterShare.toFixed(4)} (${(totalSisterShare * 100).toFixed(2)}%)`,
+                                individualFraction: sisterShare,
+                                amount: this.estateValue * totalSisterShare,
+                                individualAmount: this.estateValue * sisterShare,
+                                type: 'Residuary',
+                                count: this.heirs.fullSisters
+                            });
+                        }
+                    }
+                }
+            }
+
+            handleGrandparents(usedShares) {
+                // Simplified grandparent handling - they get 1/6 each if parents are not present
+                if (this.heirs.father === 0 && this.heirs.paternalGrandfather > 0) {
+                    const gpShare = 1/6;
+                    this.results.push({
+                        heir: 'Paternal Grandfather',
+                        fraction: `${gpShare.toFixed(4)} (${(gpShare * 100).toFixed(2)}%)`,
+                        individualFraction: gpShare,
+                        amount: this.estateValue * gpShare,
+                        individualAmount: this.estateValue * gpShare,
+                        type: 'Fixed Share',
+                        count: 1
+                    });
+                }
+
+                if (this.heirs.mother === 0 && this.heirs.paternalGrandmother > 0) {
+                    const gmShare = 1/6;
+                    this.results.push({
+                        heir: 'Paternal Grandmother',
+                        fraction: `${gmShare.toFixed(4)} (${(gmShare * 100).toFixed(2)}%)`,
+                        individualFraction: gmShare,
+                        amount: this.estateValue * gmShare,
+                        individualAmount: this.estateValue * gmShare,
+                        type: 'Fixed Share',
+                        count: 1
+                    });
+                }
+            }
+
+            displayResults() {
+                const resultsDiv = document.getElementById('results');
+                const summaryBox = document.getElementById('summaryBox');
+                const summaryContent = document.getElementById('summaryContent');
+
+                if (this.results.length === 0) {
+                    resultsDiv.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-exclamation-circle text-4xl mb-4 opacity-50"></i>
+                            <p>No valid heirs found. Please check your input.</p>
+                        </div>
+                    `;
+                    summaryBox.classList.add('hidden');
+                    return;
+                }
+
+                let html = '';
+                let totalDistributed = 0;
+                let totalHeirs = 0;
+
+                this.results.forEach((result, index) => {
+                    totalDistributed += result.amount;
+                    totalHeirs += result.count;
+                    
+                    html += `
+                        <div class="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border-l-4 border-green-500 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-gray-800 flex items-center">
+                                        <i class="fas fa-user-circle mr-2 text-green-600"></i>
+                                        ${result.heir}
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">${result.type}</span>
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-gray-800">$${result.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                    <p class="text-sm text-gray-600">${result.fraction}</p>
+                                </div>
+                            </div>
+                            ${result.count > 1 ? `
+                                <div class="mt-2 pt-2 border-t border-gray-200">
+                                    <p class="text-sm text-gray-700">
+                                        <i class="fas fa-calculator mr-1"></i>
+                                        Individual share: $${result.individualAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} each
+                                    </p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+
+                const remainingEstate = this.estateValue - totalDistributed;
+                if (remainingEstate > 0.01) {
+                    html += `
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                            <h4 class="font-semibold text-yellow-800 flex items-center">
+                                <i class="fas fa-coins mr-2"></i>
+                                Remaining Estate
+                            </h4>
+                            <p class="text-lg font-bold text-yellow-800">$${remainingEstate.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                            <p class="text-sm text-yellow-700 mt-1">May be distributed to distant relatives or charity</p>
+                        </div>
+                    `;
+                }
+
+                resultsDiv.innerHTML = html;
+
+                // Update summary
+                summaryContent.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p><strong>Total Estate:</strong> $${this.estateValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                            <p><strong>Distributed:</strong> $${totalDistributed.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                        </div>
+                        <div>
+                            <p><strong>Total Heirs:</strong> ${totalHeirs}</p>
+                            <p><strong>Distribution %:</strong> ${((totalDistributed/this.estateValue) * 100).toFixed(2)}%</p>
+                        </div>
+                    </div>
+                `;
+                summaryBox.classList.remove('hidden');
+            }
+
+            calculate() {
+                this.getInputValues();
+                
+                if (this.estateValue <= 0) {
+                    alert('Please enter a valid estate value greater than 0.');
+                    return;
+                }
+
+                this.calculateShares();
+                this.displayResults();
+            }
+        }
+
+        // Initialize calculator
+        const calculator = new IslamicInheritanceCalculator();
+
+        // Form submission
+        document.getElementById('inheritanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculator.calculate();
+        });
+
+        // Real-time calculation on input change
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                if (document.getElementById('estateValue').value > 0) {
+                    calculator.calculate();
+                }
+            });
+        });
+
+        // Initialize with default calculation
+        window.addEventListener('load', function() {
+            calculator.calculate();
+        });
+    </script>
+</body>
+</html>
